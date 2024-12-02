@@ -28,11 +28,11 @@ public class Order extends AggregateRoot<OrderId> {
     private OrderStatus orderStatus;
     private List<String> failureMessages;
 
-    public void initalizeOrder() {
+    public void initializeOrder() {
         setId(new OrderId(UUID.randomUUID()));
         trackingId = new TrackingId(UUID.randomUUID());
         orderStatus = OrderStatus.PENDING;
-        initalizeOrderItems();
+        initializeOrderItems();
     }
 
     public void validateOrder() {
@@ -80,7 +80,6 @@ public class Order extends AggregateRoot<OrderId> {
         }
     }
 
-
     private void validateInitialOrder() {
         if (orderStatus != null || getId() != null) {
             throw new OrderDomainException("Order is not in correct state for initialization!");
@@ -112,8 +111,7 @@ public class Order extends AggregateRoot<OrderId> {
         }
     }
 
-
-    private void initalizeOrderItems() {
+    private void initializeOrderItems() {
         long itemId = 1;
         for (OrderItem orderItem : items) {
             orderItem.initializeOrderItem(super.getId(), new OrderItemId(itemId++));
@@ -132,6 +130,9 @@ public class Order extends AggregateRoot<OrderId> {
         failureMessages = builder.failureMessages;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
 
     public CustomerId getCustomerId() {
         return customerId;
@@ -177,10 +178,6 @@ public class Order extends AggregateRoot<OrderId> {
         private List<String> failureMessages;
 
         private Builder() {
-        }
-
-        public static Builder builder() {
-            return new Builder();
         }
 
         public Builder orderId(OrderId val) {

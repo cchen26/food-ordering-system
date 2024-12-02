@@ -33,7 +33,7 @@ public class OrderDomainServiceImpl implements OrderDomainService {
         validateRestaurant(restaurant);
         setOrderProductInformation(order, restaurant);
         order.validateOrder();
-        order.initalizeOrder();
+        order.initializeOrder();
         log.info("Order with id: {} is initiated.", order.getId().getValue());
         return new OrderCreatedEvent(order, ZonedDateTime.now(ZoneId.of(UTC)));
     }
