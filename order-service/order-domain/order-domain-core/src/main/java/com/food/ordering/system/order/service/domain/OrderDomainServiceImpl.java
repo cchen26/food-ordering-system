@@ -12,9 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author Chao
@@ -72,21 +72,15 @@ public class OrderDomainServiceImpl implements OrderDomainService {
     }
 
     private void setOrderProductInformation(Order order, Restaurant restaurant) {
-        Map<ProductId, Product> restaurantProductMap = restaurant.getProducts().stream()
-                .collect(Collectors.toMap(
-                        Product::getId,
-                        restaurantProduct -> restaurantProduct
-                ));
-
-        order.getItems().forEach(orderItem -> {
+        Map<ProductId, Product> restaurantProductMap = new HashMap<>();
+        restaurant.getProducts().forEach(restaurantProduct ->{
+            restaurantProductMap.put(restaurantProduct.getId(), restaurantProduct);
+        });
+        order.getItems().forEach(orderItem ->  {
             Product currentProduct = orderItem.getProduct();
             Product restaurantProduct = restaurantProductMap.get(currentProduct.getId());
-
-            currentProduct.updateWithConfirmedNameAndPrice(
-                    restaurantProduct.getName(),
-                    restaurantProduct.getPrice()
-            );
-
+            currentProduct.updateWithConfirmedNameAndPrice(restaurantProduct.getName(),
+                    restaurantProduct.getPrice());
         });
     }
 }
